@@ -14,6 +14,10 @@ const Form = ({persons, setPersons, newPerson, setNewPerson,
           setPersons(persons.concat(returnedPerson))
           displayMessage(`Added ${returnedPerson.name}`)
         })
+        .catch(error => {
+          console.log(error)
+          displayMessage(`Error: ${error.response.data.error}`)
+        })
 
     } else if (sameName[0].number === newPerson.number) {
       // Same name, same number
