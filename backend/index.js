@@ -14,13 +14,13 @@ const tiny = ":method :url :status :res[content-length] - :response-time ms"
 
 app.use(morgan(`${tiny} :body`))
 
-const Person = require('./models/note')
+const Person = require('./models/person')
+
+console.log(typeof Person)
 
 app.get('/info', (_request, response) => {
-  const numPersons = Person.find({}).then(persons => {
-    persons.length
-    mongoose.connection.close()
-  })
+  console.log("--- GET /info")
+  const numPersons = Person.find({}).then(persons => persons.length)
 
   response.send(
     `<p>Phonebook has info for ${numPersons} people</p>
@@ -29,18 +29,24 @@ app.get('/info', (_request, response) => {
 })
 
 app.get('/api/persons', (_request, response) => {
+  console.log("--- GET /api/persons")
+
   Person.find({}).then(persons => {
     response.json(persons)
   })
 })
 
 app.get('/api/persons/:id', (request, response) => {
+  console.log("--- GET /api/persons/:id")
+
   Person.findById(request.params.id).then(person => {
     response.json(person)
   })
 })
 
 app.post('/api/persons', (request, response) => {
+  console.log("--- POST /api/persons")
+
   const body = request.body
   const allNames = Person.find({}).then(persons => {
     persons.map(per => per.name.toLowerCase())
@@ -67,6 +73,8 @@ app.post('/api/persons', (request, response) => {
 })
 
 app.delete('/api/persons/:id', (request, response) => {
+  console.log("--- DELETE /api/persons/:id")
+
   Person.findByIdAndDelete(request.params.id)
     .then(_result => {
       response.status(204).end()
