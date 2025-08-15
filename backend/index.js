@@ -1,4 +1,4 @@
-// require('dotenv').config()
+require('dotenv').config()
 
 const express = require('express')
 const app = express()
@@ -43,17 +43,14 @@ app.get('/api/persons/:id', (request, response) => {
 
 // CHECKME
 app.post('/api/persons', (request, response) => {
-  console.log("IN POST")
   const body = request.body
-  console.log("GOT BODY")
+
   if (!(body.name && body.number)) {
-    console.log("IN IF")
     return response.status(400).json({
       error: 'must include name and number'
     })
   }
 
-  console.log("STARTING TO PRINT")
   const newPerson = new Person({
     name:   body.name,
     number: body.number,
@@ -73,7 +70,7 @@ app.delete('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
-const PORT = 3001 // process.env.PORT
+const PORT = process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })

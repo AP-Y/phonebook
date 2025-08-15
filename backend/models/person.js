@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-const url = "mongodb+srv://aarnapy:vEdmbvfsuk0G86Zs@cluster0.wjzgkvg.mongodb.net/noteApp?retryWrites=true&w=majority&appName=Cluster0" // process.env.MONGODB_URI
+const url = process.env.MONGODB_URI
 
 console.log('connecting to', url)
 mongoose.connect(url)
