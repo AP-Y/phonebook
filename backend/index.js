@@ -10,7 +10,7 @@ const morgan = require('morgan')
 morgan.token('body', req => {
   return JSON.stringify(req.body)
 })
-const tiny = ":method :url :status :res[content-length] - :response-time ms"
+const tiny = ':method :url :status :res[content-length] - :response-time ms'
 
 app.use(morgan(`${tiny} :body`))
 
