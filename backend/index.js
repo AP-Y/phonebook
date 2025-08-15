@@ -1,4 +1,4 @@
-require('dotenv').config()
+// require('dotenv').config()
 
 const express = require('express')
 const app = express()
@@ -16,52 +16,44 @@ app.use(morgan(`${tiny} :body`))
 
 const Person = require('./models/person')
 
-console.log(typeof Person)
-
 app.get('/info', (_request, response) => {
-  console.log("--- GET /info")
-  const numPersons = Person.find({}).then(persons => persons.length)
-
-  response.send(
-    `<p>Phonebook has info for ${numPersons} people</p>
-    <p>${new Date()}</p>`
-  )
+  Person.find({}).then(persons => {
+    response.send(
+      `<p>Phonebook has info for ${persons.length} people</p>
+      <p>${new Date()}</p>`
+    )
+  })
 })
 
 app.get('/api/persons', (_request, response) => {
-  console.log("--- GET /api/persons")
-
   Person.find({}).then(persons => {
     response.json(persons)
   })
 })
 
 app.get('/api/persons/:id', (request, response) => {
-  console.log("--- GET /api/persons/:id")
-
-  Person.findById(request.params.id).then(person => {
-    response.json(person)
-  })
+  Person.findById(request.params.id)
+    .then(person => {
+      response.json(person)
+    })
+    .catch(_error => {
+      response.status(404).send({ error: 'person not found' })
+    })
 })
 
+// CHECKME
 app.post('/api/persons', (request, response) => {
-  console.log("--- POST /api/persons")
-
+  console.log("IN POST")
   const body = request.body
-  const allNames = Person.find({}).then(persons => {
-    persons.map(per => per.name.toLowerCase())
-  })
-
+  console.log("GOT BODY")
   if (!(body.name && body.number)) {
+    console.log("IN IF")
     return response.status(400).json({
       error: 'must include name and number'
     })
-  } else if (allNames.includes(body.name.toLowerCase())) {
-    return response.status(400).json({
-      error: 'name already included in phonebook'
-    })
   }
 
+  console.log("STARTING TO PRINT")
   const newPerson = new Person({
     name:   body.name,
     number: body.number,
@@ -72,9 +64,8 @@ app.post('/api/persons', (request, response) => {
   })
 })
 
-app.delete('/api/persons/:id', (request, response) => {
-  console.log("--- DELETE /api/persons/:id")
 
+app.delete('/api/persons/:id', (request, response) => {
   Person.findByIdAndDelete(request.params.id)
     .then(_result => {
       response.status(204).end()
@@ -82,7 +73,7 @@ app.delete('/api/persons/:id', (request, response) => {
     .catch(error => next(error))
 })
 
-const PORT = process.env.PORT
+const PORT = 3001 // process.env.PORT
 app.listen(PORT, () => {
   console.log(`Server listening on port ${PORT}`)
 })
